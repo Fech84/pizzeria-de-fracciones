@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pizzería de fracciones: Pi-zzaman al rescate</title>
+<style>
+:root{--rojo:#b52b27;--verde:#3c7a3f;--amarillo:#f2c94c;--crema:#fff8e8;--oscuro:#2f2f2f;--borde:#e4d7c5}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(#fff8e8,#f5ead8);color:var(--oscuro)}
+header{background:var(--rojo);color:#fff;text-align:center;padding:18px}header h1{margin:0 0 5px;font-size:clamp(25px,4vw,38px)}
+main{max-width:980px;margin:auto;padding:20px}.panel{background:#fff;border:1px solid var(--borde);border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 5px 16px #00000012}.oculto{display:none!important}.inicio{text-align:center}.mascota{font-size:78px}
+.boton{border:0;border-radius:11px;padding:11px 16px;margin:5px;font-size:16px;font-weight:700;cursor:pointer}.primario{background:var(--rojo);color:#fff}.secundario{background:var(--verde);color:#fff}.suave{background:#f4eee5;border:1px solid var(--borde)}
+.estado{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.dato{background:#faf6ef;border:1px solid var(--borde);border-radius:11px;text-align:center;padding:9px;font-size:13px}.dato strong{display:block;font-size:18px;margin-top:3px}.barra{height:15px;background:#eee4d6;border-radius:20px;overflow:hidden;margin-top:7px}.barra div{height:100%;width:0;background:linear-gradient(90deg,var(--amarillo),#e59b1d);transition:.3s}
+.cabecera{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.cabecera h2{margin:0;color:var(--rojo)}.objetivo{color:#666;font-size:14px}.tiempo{background:#fff3c9;border:1px solid #ead486;border-radius:10px;padding:9px 12px;font-weight:700}.pedido{background:#fffaf2;border-left:5px solid var(--rojo);padding:16px;border-radius:10px;font-size:18px;margin:16px 0}.opciones{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.opcion{padding:14px;border:2px solid #eadfce;border-radius:12px;background:#fff;cursor:pointer;font-size:16px}.opcion.sel{border-color:var(--rojo);background:#fff0ed}.retro,.pista{padding:12px;border-radius:10px;margin-top:12px;line-height:1.45}.ok{background:#eaf7ea;border:1px solid #acd5ad}.mal{background:#fff0ee;border:1px solid #eeb0aa}.pista{background:#fff8d9;border:1px solid #ead98a}.inventario{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.item{background:#f7f1e8;border:1px solid var(--borde);padding:7px 9px;border-radius:9px;font-size:13px}.curso{background:#eef7ff;border:2px solid #a8cce7}.ejemplo{background:#fff;border:1px solid #c9ddea;border-radius:9px;padding:10px;margin:8px 0}.final{text-align:center}.trofeo{font-size:80px}@media(max-width:720px){.estado{grid-template-columns:repeat(2,1fr)}.opciones{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>🍕 Pizzería de fracciones</h1><p>Pi-zzaman al rescate</p></header>
+<main>
+<section id="inicio" class="panel inicio">
+<div class="mascota">👨‍🍳🍕</div><h2>¡Bienvenido a Francisco’s!</h2>
+<p>Eres Pi-zzaman, el nuevo trabajador. Atiende correctamente los pedidos usando fracciones y lleva la pizzería de <b>Aprendiz</b> a <b>Maestro</b>.</p>
+<button class="boton primario" onclick="iniciar()">Jugar</button><button class="boton suave" onclick="document.getElementById('inst').classList.toggle('oculto')">Instrucciones</button>
+<div id="inst" class="oculto" style="text-align:left;margin-top:15px"><p>• Lee el pedido y selecciona una respuesta.</p><p>• Puedes pedir hasta tres pistas.</p><p>• Cada error resta una vida.</p><p>• Si pierdes todas las vidas, entras al Curso de pizzero y vuelves al mismo nivel.</p></div>
+</section>
+
+<section id="juego" class="oculto">
+<div class="panel">
+<div class="estado">
+<div class="dato">Nivel<strong id="eNivel">1</strong></div><div class="dato">Fama<strong id="eFama">Aprendiz</strong></div><div class="dato">❤️ Vidas<strong id="eVidas">5</strong></div><div class="dato">🎟️ Tarjetas<strong id="eTarjetas">0</strong></div><div class="dato">💡 Pistas<strong id="ePistas">0</strong></div>
+</div>
+<small>Progreso general</small><div class="barra"><div id="barra"></div></div>
+<div class="inventario"><span class="item" id="iGuantes">🧤 Guantes: 🔒</span><span class="item" id="iAlarma">🔔 Alarma: 🔒</span><span class="item" id="iCalc">🧮 Calculadora: 🔒</span></div>
+</div>
+
+<div id="reto" class="panel">
+<div class="cabecera"><div><h2 id="titulo"></h2><p id="objetivo" class="objetivo"></p></div><div class="tiempo">⏱️ <span id="tiempo">00:00</span></div></div>
+<p><b>Pedido <span id="nPregunta"></span> de <span id="tPreguntas"></span></b></p><div id="pregunta" class="pedido"></div><div id="opciones" class="opciones"></div>
+<button class="boton primario" onclick="verificar()">Verificar respuesta</button><button class="boton secundario" onclick="pista()">💡 Pedir pista</button><button id="comodin" class="boton suave oculto" onclick="usarComodin()">Usar comodín</button>
+<div id="cPista" class="pista oculto"></div><div id="cRetro" class="retro oculto"></div>
+</div>
+
+<div id="curso" class="panel curso oculto"><h2>👨‍🍳 Curso de pizzero</h2><p>No pierdes tu progreso. Revisa estos ejemplos y vuelve a intentarlo.</p><div id="ejemplos"></div><button class="boton primario" onclick="salirCurso()">Volver al nivel</button></div>
+</section>
+
+<section id="final" class="panel final oculto"><div class="trofeo">🏆🍕</div><h2>¡Te convertiste en Maestro Pizzero!</h2><p id="resumen"></p><h3>Cheque de propinas</h3><p style="font-size:28px;font-weight:bold;color:var(--verde)">$<span id="propina">0</span></p><button class="boton primario" onclick="reiniciar()">Jugar de nuevo</button></section>
+</main>
+<script>
+const niveles=[
+{nombre:'Nivel 1. Pedidos de pizza',objetivo:'Representación gráfica y numérica. Interpretación parte-todo.',tiempo:300,vidas:5,premio:'guantes',preguntas:[
+['Un cliente pide 3/4 de una pizza. ¿Qué fracción representa correctamente el pedido?',['2/4','3/4','4/3','1/4'],1,['El denominador indica las partes iguales.','La pizza está dividida en 4 partes.','Debes tomar 3 de esas 4 partes.'],'3/4 significa tomar 3 partes de un total de 4.'],
+['Una pizza tiene 8 porciones y el cliente quiere 5. ¿Qué fracción pidió?',['8/5','5/8','3/8','5/3'],1,['El total de porciones va abajo.','Las porciones tomadas van arriba.','Son 5 de 8.'],'La fracción correcta es 5/8.'],
+['Una pizza está dividida en 6 partes y se sirven 2. ¿Qué fracción representa lo servido?',['2/6','6/2','4/6','2/4'],0,['El total es 6.','Se sirven 2.','Escribe 2 sobre 6.'],'Se sirven 2 de 6 partes: 2/6.'],
+['La mitad de una pizza dividida en 8 porciones equivale a:',['2 porciones','3 porciones','4 porciones','6 porciones'],2,['La mitad divide el total en dos.','Calcula 8 ÷ 2.','La mitad de 8 es 4.'],'La mitad de 8 porciones son 4.'] ]},
+{nombre:'Nivel 2. Las bebidas',objetivo:'Interpretar fracciones como parte de una unidad y comparar cantidades.',tiempo:180,vidas:5,premio:'alarma',preguntas:[
+['Un vaso se divide en 5 partes iguales y se llena 3. ¿Qué fracción representa?',['2/5','3/5','5/3','3/2'],1,['El total de partes es 5.','Las partes llenas son 3.','Es 3 de 5.'],'La cantidad servida es 3/5.'],
+['Un vaso se divide en 9 partes y se llenan 8. ¿Qué fracción es?',['9/8','8/9','1/9','8/1'],1,['El total va abajo.','Lo servido va arriba.','Son 8 de 9.'],'La fracción es 8/9.'],
+['¿Cuál representa exactamente la mitad de un vaso?',['1/2','1/3','2/3','3/4'],0,['La mitad divide la unidad en dos.','Se toma una de esas dos partes.','Busca 1/2.'],'La mitad es 1/2.'],
+['Entre 2/5 y 4/5, ¿cuál es mayor?',['2/5','4/5','Son iguales','No se puede saber'],1,['Tienen el mismo denominador.','Compara los numeradores.','4 es mayor que 2.'],'Con igual denominador, el mayor numerador representa la mayor cantidad.'] ]},
+{nombre:'Nivel 3. Pedidos especiales',objetivo:'Usar la fracción como operador en recetas y situaciones multiplicativas.',tiempo:300,vidas:5,premio:'calculadora',preguntas:[
+['Cada pizza necesita 3/4 de taza de queso. Para 2 pizzas se necesita:',['3/8','6/4','3/4','2/4'],1,['Repite dos veces 3/4.','Multiplica 2 × 3/4.','El resultado es 6/4.'],'2 × 3/4 = 6/4 = 1 1/2 tazas.'],
+['Una pizza usa 2/3 de taza de salsa. Para 3 pizzas se necesita:',['2/9','6/3','3/2','5/3'],1,['Multiplica por 3.','3 × 2/3.','El resultado es 6/3.'],'3 × 2/3 = 6/3 = 2 tazas.'],
+['Si cada pizza usa 1/2 taza de champiñones, para 4 pizzas se necesita:',['2 tazas','1 taza','4 tazas','1/8'],0,['Repite 1/2 cuatro veces.','Calcula 4 × 1/2.','4/2 = 2.'],'Se necesitan 2 tazas.'],
+['Cada pizza usa 3/5 de taza de vegetales. Para 5 pizzas se necesita:',['15/5','3/25','8/5','5/3'],0,['Multiplica 5 × 3/5.','Multiplica el entero por el numerador.','El resultado es 15/5.'],'15/5 equivale a 3 tazas.'] ]},
+{nombre:'Nivel 4. Cajero',objetivo:'Aplicar fracciones y números racionales a reparto, descuentos y propinas.',tiempo:240,vidas:3,premio:'final',preguntas:[
+['Una cuenta de $60.000 se divide entre 4 personas. Cada una paga:',['$10.000','$15.000','$20.000','$25.000'],1,['Reparte en 4 partes iguales.','Calcula 60.000 ÷ 4.','Da $15.000.'],'Cada persona paga $15.000.'],
+['La propina es 1/10 de una cuenta de $80.000. ¿Cuánto es?',['$8.000','$10.000','$18.000','$800'],0,['Calcula la décima parte.','Divide 80.000 entre 10.','Da 8.000.'],'La propina es $8.000.'],
+['Un descuento de 1/5 sobre $100.000 equivale a:',['$5.000','$10.000','$20.000','$25.000'],2,['Calcula la quinta parte.','Divide 100.000 entre 5.','Da 20.000.'],'El descuento es $20.000.'],
+['Una cuenta de $96.000 se divide entre 6 personas. Cada una paga:',['$12.000','$14.000','$16.000','$18.000'],2,['Divide entre 6.','96.000 ÷ 6.','Da 16.000.'],'Cada persona paga $16.000.'] ]}
+];
+let nivel=0,preg=0,vidas=5,tarjetas=0,pistasUsadas=0,seleccion=null,pistaN=0,aciertos=0,timer=null,segundos=0,inv={guantes:false,alarma:false,calculadora:false};
+const $=id=>document.getElementById(id);
+function iniciar(){$('inicio').classList.add('oculto');$('juego').classList.remove('oculto');cargarNivel()}
+function cargarNivel(){preg=0;aciertos=0;vidas=niveles[nivel].vidas+(nivel===1&&inv.guantes?2:0);$('reto').classList.remove('oculto');$('curso').classList.add('oculto');cargarPregunta();actualizar()}
+function cargarPregunta(){parar();seleccion=null;pistaN=0;const n=niveles[nivel],q=n.preguntas[preg];$('titulo').textContent=n.nombre;$('objetivo').textContent=n.objetivo;$('nPregunta').textContent=preg+1;$('tPreguntas').textContent=n.preguntas.length;$('pregunta').textContent=q[0];$('opciones').innerHTML='';q[1].forEach((o,i)=>{const b=document.createElement('button');b.className='opcion';b.textContent=o;b.onclick=()=>{seleccion=i;document.querySelectorAll('.opcion').forEach(x=>x.classList.remove('sel'));b.classList.add('sel')};$('opciones').appendChild(b)});$('cPista').className='pista oculto';$('cRetro').className='retro oculto';configComodin();segundos=n.tiempo;iniciarTimer();actualizar()}
+function verificar(){if(seleccion===null){alert('Selecciona una respuesta.');return}parar();const q=niveles[nivel].preguntas[preg];if(seleccion===q[2]){aciertos++;tarjetas++;$('cRetro').className='retro ok';$('cRetro').innerHTML='✅ <b>¡Pedido correcto!</b><br>'+q[4];actualizar();setTimeout(siguiente,1400)}else{vidas--;$('cRetro').className='retro mal';$('cRetro').innerHTML='❌ <b>Revisa el pedido.</b><br>La respuesta aún no es correcta. Puedes pedir una pista y volver a intentarlo.';actualizar();if(vidas<=0)setTimeout(curso,800);else{segundos=Math.max(30,Math.floor(niveles[nivel].tiempo/2));iniciarTimer()}}}
+function siguiente(){preg++;if(preg>=niveles[nivel].preguntas.length)finNivel();else cargarPregunta()}
+function pista(){const q=niveles[nivel].preguntas[preg];$('cPista').classList.remove('oculto');if(pistaN>=q[3].length){$('cPista').textContent='Ya usaste todas las pistas.';return}$('cPista').innerHTML='💡 <b>Pista '+(pistaN+1)+':</b> '+q[3][pistaN++];pistasUsadas++;actualizar()}
+function finNivel(){parar();const ratio=aciertos/niveles[nivel].preguntas.length;if(nivel===0&&ratio>=.75){inv.guantes=true;alert('🧤 Ganaste los Guantes Deluxe: +2 vidas en el Nivel 2.')}if(nivel===1&&ratio>=.75){inv.alarma=true;alert('🔔 Ganaste la Alarma de pizza correcta.')}if(nivel===2&&ratio>=.75){inv.calculadora=true;alert('🧮 Ganaste la Calculadora especial.')}nivel++;if(nivel>=niveles.length){finJuego();return}alert('✅ Nivel superado. ¡Sigues aumentando la fama de Francisco’s!');cargarNivel()}
+function curso(){parar();$('reto').classList.add('oculto');$('curso').classList.remove('oculto');$('ejemplos').innerHTML=['En 3/4, el 4 indica partes iguales y el 3 las partes tomadas.','Para hallar 1/5 de una cantidad, divide esa cantidad entre 5.','Si una receta usa 2/3 por pizza y haces 2 pizzas, calcula 2 × 2/3.'].map(x=>'<div class="ejemplo">'+x+'</div>').join('')}
+function salirCurso(){vidas=3;$('curso').classList.add('oculto');$('reto').classList.remove('oculto');cargarPregunta()}
+function configComodin(){const b=$('comodin');b.classList.add('oculto');if(nivel===2&&inv.alarma){b.textContent='🔔 Usar alarma';b.classList.remove('oculto')}if(nivel===3&&inv.calculadora){b.textContent='🧮 Usar calculadora';b.classList.remove('oculto')}}
+function usarComodin(){const q=niveles[nivel].preguntas[preg];$('cPista').classList.remove('oculto');if(nivel===2){$('cPista').textContent=seleccion===null?'Selecciona primero una opción.':(seleccion===q[2]?'🔔 La alarma indica que parece correcta.':'🔔 La alarma indica que conviene revisar.')}else $('cPista').textContent='🧮 Ayuda: la respuesta correcta corresponde a la opción '+(q[2]+1)+'.'}
+function iniciarTimer(){parar();pintar();timer=setInterval(()=>{segundos--;pintar();if(segundos<=0){parar();vidas--;actualizar();$('cRetro').className='retro mal';$('cRetro').innerHTML='⏱️ Se terminó el tiempo. Pierdes una vida, pero puedes volver a intentar.';if(vidas<=0)setTimeout(curso,700);else{segundos=Math.max(30,Math.floor(niveles[nivel].tiempo/2));iniciarTimer()}}},1000)}
+function parar(){if(timer){clearInterval(timer);timer=null}}function pintar(){const m=Math.floor(segundos/60),s=segundos%60;$('tiempo').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+function actualizar(){const famas=['Aprendiz','Pizzero','Especialista','Maestro'];$('eNivel').textContent=Math.min(nivel+1,4);$('eFama').textContent=famas[Math.min(nivel,3)];$('eVidas').textContent=vidas;$('eTarjetas').textContent=tarjetas;$('ePistas').textContent=pistasUsadas;const total=niveles.reduce((a,n)=>a+n.preguntas.length,0);let hechas=niveles.slice(0,nivel).reduce((a,n)=>a+n.preguntas.length,0)+preg;$('barra').style.width=Math.min(100,hechas/total*100)+'%';$('iGuantes').textContent='🧤 Guantes: '+(inv.guantes?'✅':'🔒');$('iAlarma').textContent='🔔 Alarma: '+(inv.alarma?'✅':'🔒');$('iCalc').textContent='🧮 Calculadora: '+(inv.calculadora?'✅':'🔒')}
+function finJuego(){parar();$('juego').classList.add('oculto');$('final').classList.remove('oculto');const p=Math.max(0,tarjetas*5000-pistasUsadas*500);$('propina').textContent=p.toLocaleString('es-CO');$('resumen').innerHTML='Terminaste con <b>'+tarjetas+' tarjetas</b> y usaste <b>'+pistasUsadas+' pistas</b>. Francisco’s alcanzó la categoría <b>Maestro</b>.'}
+function reiniciar(){nivel=0;preg=0;vidas=5;tarjetas=0;pistasUsadas=0;seleccion=null;inv={guantes:false,alarma:false,calculadora:false};$('final').classList.add('oculto');$('juego').classList.remove('oculto');cargarNivel()}
+</script>
+</body>
+</html>
